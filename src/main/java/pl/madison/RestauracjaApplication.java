@@ -16,22 +16,21 @@ public class RestauracjaApplication implements CommandLineRunner{
         SpringApplication.run(RestauracjaApplication.class, args);
     }
 
+    public Klient createKlient(String nazwisko, double rachunek){
+        Klient kl = Klient.builder().nazwisko(nazwisko).rachunek(rachunek).build();
+        return kl;
+    }
+
     @Autowired
     private KlientDao klientRespository;
     public void run(String... strings) throws Exception {
-        Klient klient1 = new Klient();
-        klient1.setNazwisko("Kowalski");
-        klient1.setRachunek(78.90);
+        Klient klient1 = Klient.builder().nazwisko("Kowalski").rachunek(78.90).build();
         klientRespository.save(klient1);
 
-        Klient klient2 = new Klient();
-        klient1.setNazwisko("Nowak");
-        klient1.setRachunek(56.67);
+        Klient klient2 = Klient.builder().nazwisko("Nowak").rachunek(56.67).build();
         klientRespository.save(klient2);
 
-        Klient klient3 = new Klient();
-        klient3.setNazwisko("Jaworski");
-        klient3.setRachunek(100.00);
+        Klient klient3 = Klient.builder().nazwisko("Jaworski").rachunek(100.00).build();
         klientRespository.save(klient3);
     }
 }

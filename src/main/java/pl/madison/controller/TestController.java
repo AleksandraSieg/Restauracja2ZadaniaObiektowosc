@@ -5,26 +5,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import pl.madison.dao.KlientDao;
 import pl.madison.domain.Klient;
+import pl.madison.services.IKlientServices;
 
 import java.util.List;
 
 @RestController
 public class TestController {
 
+//    @Autowired
+//    private KlientDao klientRespository;
+
     @Autowired
-    private KlientDao klientRespository;
+    private IKlientServices iKlientServices;
 
     @RequestMapping(value = "/wyswietl", method = RequestMethod.GET)
-    public String wyswietl(){
-        String klient = "";
+    public List<Klient> wyswietl(){
 
-        for (Klient klient1 : klientRespository.findAll()) {
-            klient = klient + klient1;
-        }
-
-        return klient;
+        return (List<Klient>) iKlientServices.findAll();
     }
 
     @RequestMapping(value = "/sredniaArytmetyczna", method = RequestMethod.GET)
@@ -32,11 +30,11 @@ public class TestController {
         String srednia = "";
         double suma = 0;
 
-        for (Klient klient : klientRespository.findAll()) {
+        for (Klient klient : iKlientServices.findAll()) {
             suma = suma + klient.getRachunek();
         }
 
-        double sredniaArytm = suma/((List<Klient>)klientRespository.findAll()).size();
+        double sredniaArytm = suma/((List<Klient>)iKlientServices.findAll()).size();
 
         return srednia + sredniaArytm;
     }
@@ -44,25 +42,23 @@ public class TestController {
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
     public String update(@RequestParam("id") Long id, @RequestParam("rachunek") double rachunek){
 
-        Klient zamianaKlienta = klientRespository.findOne(id);
+        Klient zamianaKlienta = iKlientServices.findOne(id);
         zamianaKlienta.setRachunek(rachunek);
-        klientRespository.save(zamianaKlienta);
+        iKlientServices.save(zamianaKlienta);
 
         return "Udalo Ci sie poprawic Rachunek :)";
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
     public String delete(@RequestParam("id") Long id){
-        klientRespository.delete(id);
+        iKlientServices.delete(id);
         return "Usunales klienta i jego rachunek";
     }
 
     @RequestMapping(value = "/dodaj", method = RequestMethod.PUT)
     public String dodaj(@RequestParam("nazwisko") String nazwisko, @RequestParam("rachunek") double rachunek){
-        Klient nowyKlient = new Klient();
-        nowyKlient.setNazwisko(nazwisko);
-        nowyKlient.setRachunek(rachunek);
-        klientRespository.save(nowyKlient);
+        Klient nowyKlient = Klient.builder().nazwisko(nazwisko).rachunek(rachunek).build();
+        iKlientServices.save(nowyKlient);
 
         return "Jupi kolejny klient zaplacil :)";
     }
